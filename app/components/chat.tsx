@@ -697,6 +697,7 @@ function _Chat() {
   };
 
   const doSubmit = (userInput: string) => {
+    console.log(111, userInput);
     if (userInput.trim() === "") return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -1326,5 +1327,6 @@ function _Chat() {
 export function Chat() {
   const chatStore = useChatStore();
   const sessionIndex = chatStore.currentSessionIndex;
+  console.log(123, sessionIndex);
   return <_Chat key={sessionIndex}></_Chat>;
 }

@@ -17,6 +17,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import axios from "axios";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -112,8 +113,9 @@ export class ChatGPTApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
+      console.log(115, shouldStream);
 
-      if (shouldStream) {
+      if (!shouldStream) {
         let responseText = "";
         let finished = false;
 
@@ -200,10 +202,34 @@ export class ChatGPTApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        const res = await fetch(chatPath, chatPayload);
+        const AZURE_API_ENDPOINT =
+          "https://chitchat3.openai.azure.com/openai/deployments/chitchat3/chat/completions?api-version=2023-05-15";
+        const AZURE_API_KEY = "e108e760c2cd4865b0f1365c69df6432";
+        console.log(2222, chatPath, chatPayload);
+        // const res = await axios.post(AZURE_API_ENDPOINT, {
+        //   messages: requestPayload.messages,
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     "api-key": AZURE_API_KEY,
+        //   },
+        // });
+        const res = await axios.post(
+          AZURE_API_ENDPOINT,
+          {
+            max_tokens: 500,
+            messages: requestPayload.messages,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "api-key": AZURE_API_KEY,
+            },
+          },
+        );
+        // const res = await fetch(AZURE_API_ENDPOINT, chatPayload);
         clearTimeout(requestTimeoutId);
 
-        const resJson = await res.json();
+        const resJson = res.data;
         const message = this.extractMessage(resJson);
         options.onFinish(message);
       }
