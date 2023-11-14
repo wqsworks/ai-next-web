@@ -17,7 +17,6 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
-import axios from "axios";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -68,6 +67,7 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const accessStore = useAccessStore.getState();
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: v.content,
@@ -89,7 +89,7 @@ export class ChatGPTApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
-      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      max_tokens: Math.max(modelConfig.max_tokens, 1024),
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
@@ -105,9 +105,11 @@ export class ChatGPTApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: {
+          Authorization: accessStore.token,
+          ...getHeaders(),
+        },
       };
-
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
@@ -200,31 +202,14 @@ export class ChatGPTApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        console.log(2222, chatPath, chatPayload);
-        // const res = await axios.post(AZURE_API_ENDPOINT, {
-        //   messages: requestPayload.messages,
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     "api-key": AZURE_API_KEY,
-        //   },
-        // });
-        const res = await axios.post(
-          "https://backend.ai.chenai.space/message",
-          {
-            max_tokens: 500,
-            messages: requestPayload.messages,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
+        // return;
+        const res = await fetch(
+          "https://backend.ai.chenai.space/api/message",
+          chatPayload,
         );
-        // const res = await fetch(AZURE_API_ENDPOINT, chatPayload);
         clearTimeout(requestTimeoutId);
 
-        console.log(1111111111111, res);
-        const resJson = res.data;
+        const resJson = await res.json();
         const message = this.extractMessage(resJson);
         options.onFinish(message);
       }

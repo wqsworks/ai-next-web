@@ -76,6 +76,10 @@ if (mode !== "export") {
         source: "/sharegpt",
         destination: "https://sharegpt.com/api/conversations",
       },
+      {
+        source: "/api/:path*",
+        destination: "https://backend.ai.chenai.space/api/:path*",
+      },
     ];
 
     return {

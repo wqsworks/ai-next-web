@@ -1,14 +1,14 @@
 import styles from "./auth.module.scss";
-import { IconButton } from "./button";
+import { IconButton } from "../button";
 
 import { useNavigate } from "react-router-dom";
-import { Path } from "../constant";
-import { useAccessStore } from "../store";
-import Locale from "../locales";
+import { Path } from "../../constant";
+import { useAccessStore } from "../../store";
+import Locale from "../../locales";
 
-import BotIcon from "../icons/bot.svg";
+import BotIcon from "../../icons/bot.svg";
 import { useEffect } from "react";
-import { getClientConfig } from "../config/client";
+import { getClientConfig } from "../../config/client";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -41,6 +41,27 @@ export function AuthPage() {
 
       <input
         className={styles["auth-input"]}
+        placeholder={Locale.Auth.Input}
+        value={accessStore.username}
+        onChange={(e) => {
+          accessStore.update(
+            (access) => (access.username = e.currentTarget.value),
+          );
+        }}
+      />
+      <input
+        className={styles["auth-input"]}
+        type="password"
+        placeholder={Locale.Auth.Input}
+        value={accessStore.password}
+        onChange={(e) => {
+          accessStore.update(
+            (access) => (access.password = e.currentTarget.value),
+          );
+        }}
+      />
+      {/* <input
+        className={styles["auth-input"]}
         type="password"
         placeholder={Locale.Auth.Input}
         value={accessStore.accessCode}
@@ -49,7 +70,7 @@ export function AuthPage() {
             (access) => (access.accessCode = e.currentTarget.value),
           );
         }}
-      />
+      /> */}
       {!accessStore.hideUserApiKey ? (
         <>
           <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>

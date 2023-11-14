@@ -18,6 +18,9 @@ const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
 
+  username: "",
+  password: "",
+
   provider: ServiceProvider.OpenAI,
 
   // openai
@@ -30,6 +33,7 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // server config
+  token: "",
   needCode: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,
@@ -70,17 +74,32 @@ export const useAccessStore = createPersistStore(
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
-      fetch("/api/config", {
+      fetch("https://backend.ai.chenai.space/api/login", {
         method: "post",
-        body: null,
+        body: JSON.stringify({
+          username: get().username,
+          password: get().password,
+        }),
         headers: {
           ...getHeaders(),
         },
       })
         .then((res) => res.json())
-        .then((res: DangerConfig) => {
+        .then((res: DangerConfig & { token: string }) => {
+          // {
+          //   "status": "SUCCESS",
+          //   "token": "xjXYbz6OVmHNv8Kmkox7ghEnFFFlrPrB"
+          // }
           console.log("[Config] got config from server", res);
-          set(() => ({ ...res }));
+          set(() => ({
+            token: res.token,
+            needCode: false,
+            hideUserApiKey: false,
+            hideBalanceQuery: false,
+            disableGPT4: false,
+            disableFastLink: false,
+            customModels: "",
+          }));
         })
         .catch(() => {
           console.error("[Config] failed to fetch config");
