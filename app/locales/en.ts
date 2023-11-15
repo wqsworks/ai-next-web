@@ -19,6 +19,9 @@ const en: LocaleType = {
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
+
+    Username: "请输入用户名",
+    Password: "请输入密码",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -443,8 +446,8 @@ const en: LocaleType = {
   },
   Exporter: {
     Description: {
-      Title: "Only messages after clearing the context will be displayed"
-    },  
+      Title: "Only messages after clearing the context will be displayed",
+    },
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",
