@@ -78,7 +78,7 @@ if (mode !== "export") {
       },
       {
         source: "/api/:path*",
-        destination: "https://backend.ai.chenai.space/api/:path*",
+        destination: "https://ai.chenai.space/api/:path*",
       },
     ];
 
