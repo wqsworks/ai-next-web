@@ -203,10 +203,7 @@ export class ChatGPTApi implements LLMApi {
         });
       } else {
         // return;
-        const res = await fetch(
-          "https://backend.ai.chenai.space/api/message",
-          chatPayload,
-        );
+        const res = await fetch("/api/message", chatPayload);
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();

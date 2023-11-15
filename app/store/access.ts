@@ -74,7 +74,7 @@ export const useAccessStore = createPersistStore(
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
-      fetch("https://backend.ai.chenai.space/api/login", {
+      fetch("/api/login", {
         method: "post",
         body: JSON.stringify({
           username: get().username,
