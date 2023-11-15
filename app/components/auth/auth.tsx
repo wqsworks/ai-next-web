@@ -9,6 +9,7 @@ import Locale from "../../locales";
 import BotIcon from "../../icons/bot.svg";
 import { useEffect } from "react";
 import { getClientConfig } from "../../config/client";
+import { Button, Input, Space } from "antd";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -23,6 +24,10 @@ export function AuthPage() {
     });
   }; // Reset access code to empty string
 
+  const handleLogIn = async () => {
+    await accessStore.logIn();
+    goChat();
+  };
   useEffect(() => {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
@@ -39,68 +44,37 @@ export function AuthPage() {
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
       <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
 
-      <input
-        className={styles["auth-input"]}
-        placeholder={Locale.Auth.Input}
+      <Input
+        className={styles.input}
+        placeholder={Locale.Auth.Username}
         value={accessStore.username}
         onChange={(e) => {
           accessStore.update(
             (access) => (access.username = e.currentTarget.value),
           );
         }}
-      />
-      <input
-        className={styles["auth-input"]}
+      ></Input>
+
+      <Input
         type="password"
-        placeholder={Locale.Auth.Input}
+        className={styles.input}
+        placeholder={Locale.Auth.Password}
         value={accessStore.password}
         onChange={(e) => {
           accessStore.update(
             (access) => (access.password = e.currentTarget.value),
           );
         }}
-      />
-      {/* <input
-        className={styles["auth-input"]}
-        type="password"
-        placeholder={Locale.Auth.Input}
-        value={accessStore.accessCode}
-        onChange={(e) => {
-          accessStore.update(
-            (access) => (access.accessCode = e.currentTarget.value),
-          );
-        }}
-      /> */}
-      {!accessStore.hideUserApiKey ? (
-        <>
-          <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
-          <input
-            className={styles["auth-input"]}
-            type="password"
-            placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
-            value={accessStore.openaiApiKey}
-            onChange={(e) => {
-              accessStore.update(
-                (access) => (access.openaiApiKey = e.currentTarget.value),
-              );
-            }}
-          />
-        </>
-      ) : null}
+      ></Input>
 
       <div className={styles["auth-actions"]}>
-        <IconButton
-          text={Locale.Auth.Confirm}
+        <Button
           type="primary"
-          onClick={goChat}
-        />
-        <IconButton
-          text={Locale.Auth.Later}
-          onClick={() => {
-            resetAccessCode();
-            goHome();
-          }}
-        />
+          onClick={handleLogIn}
+          style={{ backgroundColor: "var(--primary)" }}
+        >
+          {Locale.Auth.Confirm}
+        </Button>
       </div>
     </div>
   );

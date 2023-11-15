@@ -7,7 +7,7 @@ import {
   ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-
+import axios from "axios";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
@@ -106,7 +106,7 @@ export class ChatGPTApi implements LLMApi {
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: {
-          Authorization: accessStore.token,
+          // Authorization: accessStore.token,
           ...getHeaders(),
         },
       };

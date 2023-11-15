@@ -108,6 +108,43 @@ export const useAccessStore = createPersistStore(
           fetchState = 2;
         });
     },
+    logIn: async () => {
+      // if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
+      fetchState = 1;
+      await fetch("/api/login", {
+        method: "post",
+        body: JSON.stringify({
+          username: get().username,
+          password: get().password,
+        }),
+        headers: {
+          ...getHeaders(),
+        },
+      })
+        .then((res) => res.json())
+        .then((res: DangerConfig & { token: string }) => {
+          // {
+          //   "status": "SUCCESS",
+          //   "token": "xjXYbz6OVmHNv8Kmkox7ghEnFFFlrPrB"
+          // }
+          console.log("[Config] got config from server", res);
+          set(() => ({
+            token: res.token,
+            needCode: false,
+            hideUserApiKey: false,
+            hideBalanceQuery: false,
+            disableGPT4: false,
+            disableFastLink: false,
+            customModels: "",
+          }));
+        })
+        .catch(() => {
+          console.error("[Config] failed to fetch config");
+        })
+        .finally(() => {
+          fetchState = 2;
+        });
+    },
   }),
   {
     name: StoreKey.Access,
