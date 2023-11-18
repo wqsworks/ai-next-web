@@ -7,7 +7,6 @@ import {
   ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import axios from "axios";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
@@ -17,6 +16,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import { $http } from "@/app/api/custom-axios";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -93,7 +93,7 @@ export class ChatGPTApi implements LLMApi {
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] openai payload: ", requestPayload);
+    console.log("[Request] openai pay load: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
@@ -103,8 +103,10 @@ export class ChatGPTApi implements LLMApi {
       const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
         method: "POST",
-        body: JSON.stringify(requestPayload),
-        signal: controller.signal,
+        data: {
+          ...requestPayload,
+          signal: controller.signal,
+        },
         headers: {
           // Authorization: accessStore.token,
           ...getHeaders(),
@@ -203,11 +205,14 @@ export class ChatGPTApi implements LLMApi {
         });
       } else {
         // return;
-        const res = await fetch("/api/message", chatPayload);
+        const res = await $http({
+          url: "/api/message",
+          ...chatPayload,
+        });
         clearTimeout(requestTimeoutId);
 
-        const resJson = await res.json();
-        const message = this.extractMessage(resJson);
+        console.log(215, res);
+        const message = this.extractMessage(res);
         options.onFinish(message);
       }
     } catch (e) {

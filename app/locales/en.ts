@@ -20,8 +20,8 @@ const en: LocaleType = {
     Confirm: "Confirm",
     Later: "Later",
 
-    Username: "请输入用户名",
-    Password: "请输入密码",
+    Username: "Please enter username",
+    Password: "Please enter password",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,

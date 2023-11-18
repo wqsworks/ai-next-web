@@ -36,6 +36,12 @@
 }
 
 // custom
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
 
 .input {
   margin: 12px;

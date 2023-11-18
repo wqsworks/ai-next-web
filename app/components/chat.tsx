@@ -1327,6 +1327,5 @@ function _Chat() {
 export function Chat() {
   const chatStore = useChatStore();
   const sessionIndex = chatStore.currentSessionIndex;
-  console.log(123, sessionIndex);
   return <_Chat key={sessionIndex}></_Chat>;
 }

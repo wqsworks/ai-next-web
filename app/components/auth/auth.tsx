@@ -43,29 +43,34 @@ export function AuthPage() {
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
       <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
+      <div className={styles.line}>
+        账号
+        <Input
+          className={styles.input}
+          placeholder={Locale.Auth.Username}
+          value={accessStore.username}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.username = e.currentTarget.value),
+            );
+          }}
+        ></Input>
+      </div>
 
-      <Input
-        className={styles.input}
-        placeholder={Locale.Auth.Username}
-        value={accessStore.username}
-        onChange={(e) => {
-          accessStore.update(
-            (access) => (access.username = e.currentTarget.value),
-          );
-        }}
-      ></Input>
-
-      <Input
-        type="password"
-        className={styles.input}
-        placeholder={Locale.Auth.Password}
-        value={accessStore.password}
-        onChange={(e) => {
-          accessStore.update(
-            (access) => (access.password = e.currentTarget.value),
-          );
-        }}
-      ></Input>
+      <div className={styles.line}>
+        密码
+        <Input
+          type="password"
+          className={styles.input}
+          placeholder={Locale.Auth.Password}
+          value={accessStore.password}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.password = e.currentTarget.value),
+            );
+          }}
+        ></Input>
+      </div>
 
       <div className={styles["auth-actions"]}>
         <Button

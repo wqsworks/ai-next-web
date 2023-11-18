@@ -22,6 +22,7 @@ import {
   Routes,
   Route,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
@@ -123,6 +124,8 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
+  const navigator = useNavigate();
+
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
@@ -133,6 +136,13 @@ function Screen() {
 
   useEffect(() => {
     loadAsyncGoogleFont();
+  }, []);
+
+  useEffect(() => {
+    window.GlobalBridge = {};
+    window.GlobalBridge.returnAuthPage = () => {
+      navigator("/auth");
+    };
   }, []);
 
   return (

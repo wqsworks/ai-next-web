@@ -1,7 +1,24 @@
 import { useAccessStore } from "@/app/store";
-import axios, { AxiosResponse, AxiosError } from "axios";
+import { message } from "antd";
+import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
 import { error } from "console";
 import { cloneDeep } from "lodash-es";
+
+function getCookie(name: string) {
+  let cookieArr = document.cookie.split("; ");
+
+  for (let i = 0; i < cookieArr.length; i++) {
+    let cookiePair = cookieArr[i].split("=");
+
+    // 如果找到的是我们想要的 cookie，返回其值
+    if (name == cookiePair[0]) {
+      return decodeURIComponent(cookiePair[1]);
+    }
+  }
+
+  // 如果没有找到，返回 null
+  return null;
+}
 
 const createHttp = () => {
   const client = axios.create({
@@ -11,11 +28,10 @@ const createHttp = () => {
 
   client.interceptors.request.use((config) => {
     const conf = cloneDeep(config);
-
-    if (window.__GLOBAL__TOKEN__) {
-      conf.headers.set("Authorization", window.__GLOBAL__TOKEN__);
+    const token = getCookie("__GLOBAL__TOKEN__");
+    if (token) {
+      conf.headers.set("Authorization", token);
     }
-
     return conf;
   });
 
@@ -26,12 +42,19 @@ const createHttp = () => {
     (error: AxiosError) => {
       const { response } = error;
       if (response?.status === 401) {
+        message.error("请先登录");
+        window.GlobalBridge.returnAuthPage?.();
       }
 
       return Promise.reject(error);
     },
   );
+  return client;
 };
 
-const $http = createHttp();
+const $http = (config: AxiosRequestConfig) => {
+  return createHttp()
+    .request({ ...config })
+    .then((res) => res.data);
+};
 export { $http };

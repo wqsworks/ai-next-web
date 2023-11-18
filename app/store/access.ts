@@ -8,6 +8,7 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
+import { $http } from "../api/custom-axios";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -111,22 +112,22 @@ export const useAccessStore = createPersistStore(
     logIn: async () => {
       // if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
-      await fetch("/api/login", {
+      await $http({
         method: "post",
-        body: JSON.stringify({
+        url: "/api/login",
+        data: {
           username: get().username,
           password: get().password,
-        }),
-        headers: {
-          ...getHeaders(),
         },
       })
-        .then((res) => res.json())
         .then((res: DangerConfig & { token: string }) => {
-          // {
-          //   "status": "SUCCESS",
-          //   "token": "xjXYbz6OVmHNv8Kmkox7ghEnFFFlrPrB"
-          // }
+          if (res?.token) {
+            let date = new Date();
+            date.setTime(date.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+            document.cookie =
+              `__GLOBAL__TOKEN__=${res.token}; expires=` + date.toString();
+          }
+          window.__GLOBAL__TOKEN__ = res?.token;
           console.log("[Config] got config from server", res);
           set(() => ({
             token: res.token,

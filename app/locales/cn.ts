@@ -11,7 +11,7 @@ const cn = {
       : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
   },
   Auth: {
-    Title: "需要密码",
+    Title: "需要账号密码",
     Tips: "管理员开启了登录验证，请在下方填入账号密码",
     SubTips: "或者输入你的 OpenAI API 密钥",
     Input: "在此处填写访问码",
