@@ -139,9 +139,9 @@ export const useAccessStore = createPersistStore(
             customModels: "",
           }));
         })
-        .catch(() => {
-          console.error("[Config] failed to fetch config");
-        })
+        // .catch(() => {
+        //   console.error("[Config] failed to fetch config");
+        // })
         .finally(() => {
           fetchState = 2;
         });

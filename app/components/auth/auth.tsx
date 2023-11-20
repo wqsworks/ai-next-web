@@ -9,7 +9,8 @@ import Locale from "../../locales";
 import BotIcon from "../../icons/bot.svg";
 import { useEffect } from "react";
 import { getClientConfig } from "../../config/client";
-import { Button, Input, Space } from "antd";
+import { Button, Input, Space, Tag } from "antd";
+import "./auth.scss";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -25,8 +26,14 @@ export function AuthPage() {
   }; // Reset access code to empty string
 
   const handleLogIn = async () => {
-    await accessStore.logIn();
-    goChat();
+    try {
+      await accessStore.logIn();
+      console.log(31);
+
+      goChat();
+    } catch (error) {
+      console.error("[Config] failed to fetch config");
+    }
   };
   useEffect(() => {
     if (getClientConfig()?.isApp) {
@@ -46,6 +53,7 @@ export function AuthPage() {
       <div className={styles.line}>
         账号
         <Input
+          id="username"
           className={styles.input}
           placeholder={Locale.Auth.Username}
           value={accessStore.username}

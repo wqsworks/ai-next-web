@@ -37,7 +37,16 @@ const createHttp = () => {
 
   client.interceptors.response.use(
     (response: AxiosResponse) => {
-      return Promise.resolve(response);
+      if (response.data.code !== 0) {
+        if (response.data.code === 401) {
+          message.error("请先登录");
+          window.GlobalBridge.returnAuthPage?.();
+          return Promise.reject(response.data);
+        }
+        message.error(response.data?.msg);
+        return Promise.reject(response.data);
+      }
+      return Promise.resolve(response.data);
     },
     (error: AxiosError) => {
       const { response } = error;

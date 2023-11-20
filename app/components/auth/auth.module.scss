@@ -41,9 +41,15 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-}
 
-.input {
-  margin: 12px;
-  width: 15%;
+  .input {
+    margin: 12px;
+    width: 15%;
+  }
+
+  :global {
+    .ant-input::placeholder {
+      color: var(--black);
+    }
+  }
 }
